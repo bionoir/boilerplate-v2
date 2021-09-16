@@ -2,9 +2,9 @@ name: PHP Composer
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   prepare:
@@ -89,13 +89,13 @@ jobs:
         run: vendor/bin/phplint --no-interaction
 
       - name: Lint Symfony config
-        run: bin/console lint:yaml config --parse-tags
+        run: php bin/console lint:yaml config --parse-tags
 
       - name: Lint DI Container
-        run: bin/console lint:container
+        run: php bin/console lint:container
 
       - name: Validate Doctrine schema
-        run: bin/console doctrine:schema:validate --skip-sync
+        run: php bin/console doctrine:schema:validate --skip-sync
 
       - name: Prepare PHPStan cache
         uses: actions/cache@v2
@@ -108,7 +108,7 @@ jobs:
         run: vendor/bin/ecs check --no-interaction --no-progress-bar -c ecs.php
 
       - name: Build app cache for PHPStan
-        run: bin/console cache:clear
+        run: php bin/console cache:clear
         env:
           APP_ENV: test
           APP_DEBUG: 1
