@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "26414d2dd5db1944e65062f9c11ccfd9",
+    "content-hash": "2897561549092466d4ac193ef4f2dad3",
     "packages": [
         {
             "name": "composer/package-versions-deprecated",
@@ -9975,6 +9975,56 @@
                 }
             ],
             "time": "2021-07-27T04:28:53+00:00"
+        },
+        {
+            "name": "symplify/easy-coding-standard",
+            "version": "9.4.60",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/symplify/easy-coding-standard.git",
+                "reference": "323e57e0a667d2795c9fac591caf955469f2ed75"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/symplify/easy-coding-standard/zipball/323e57e0a667d2795c9fac591caf955469f2ed75",
+                "reference": "323e57e0a667d2795c9fac591caf955469f2ed75",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.1"
+            },
+            "conflict": {
+                "friendsofphp/php-cs-fixer": "<3.0",
+                "squizlabs/php_codesniffer": "<3.6"
+            },
+            "bin": [
+                "bin/ecs"
+            ],
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "bootstrap.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Prefixed scoped version of ECS package",
+            "support": {
+                "source": "https://github.com/symplify/easy-coding-standard/tree/9.4.60"
+            },
+            "funding": [
+                {
+                    "url": "https://www.paypal.me/rectorphp",
+                    "type": "custom"
+                },
+                {
+                    "url": "https://github.com/tomasvotruba",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-09-13T14:42:11+00:00"
         },
         {
             "name": "theseer/tokenizer",
