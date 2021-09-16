@@ -97,8 +97,14 @@
     "myclabs/deep-copy": {
         "version": "1.10.2"
     },
+    "n98/junit-xml": {
+        "version": "1.1.0"
+    },
     "nikic/php-parser": {
         "version": "v4.12.0"
+    },
+    "overtrue/phplint": {
+        "version": "3.0.3"
     },
     "phar-io/manifest": {
         "version": "2.0.3"
