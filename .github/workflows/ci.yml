@@ -1,0 +1,178 @@
+name: PHP Composer
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  prepare:
+    name: Prepare
+    runs-on: ubuntu-latest
+    outputs:
+      ref: ${{ steps.base.outputs.ref }}
+      rev: ${{ steps.base.outputs.rev || steps.rev.outputs.rev }}
+    steps:
+      - id: base
+        run: |
+          if [[ "${{ github.event_name }}" = "pull_request" ]]; then
+            echo "::set-output name=ref::${{ github.head_ref }}"
+            echo "::set-output name=checkout::${{ github.head_ref }}"
+          else
+            echo "::set-output name=ref::$(echo "${{ github.ref }}" | cut -d/ -f3-)"
+            echo "::set-output name=rev::${{ github.sha }}"
+          fi
+      - uses: actions/checkout@v2
+        if: ${{ steps.base.outputs.checkout }}
+        with:
+          ref: ${{ steps.base.outputs.checkout }}
+
+      - id: rev
+        if: ${{ steps.base.outputs.checkout }}
+        run: |
+          echo "::set-output name=rev::$(git rev-parse HEAD)"
+  ##
+  # Backend
+  ##
+  backend-static:
+    name: Backend / Static Analysis
+    runs-on: ubuntu-18.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: "none"
+          extensions: "json,pdo_mysql,redis"
+          ini-values: "memory_limit=-1"
+          php-version: "8.0"
+        env:
+          fail-fast: true
+          update: true
+
+      - uses: actions/cache@v2
+        id: cache-db
+        with:
+          path: ~/.symfony/cache
+          key: symfony-security-cache
+
+      - uses: symfonycorp/security-checker-action@v2
+
+      - name: Check CI reqs
+        run: composer check-platform-reqs
+
+      - name: Load vendors from cache
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-vendor-${{ hashFiles('**/composer.lock') }}
+
+      - name: Install dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        run: composer install --prefer-dist --no-progress
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      - name: Prepare phplint cache
+        uses: actions/cache@v2
+        with:
+          path: var/cache/phplint
+          key: ${{ runner.os }}-phplint-${{ github.ref }}
+          restore-keys: ${{ runner.os }}-phplint-
+
+      - name: Run phplint
+        run: vendor/bin/phplint --no-interaction
+
+      - name: Lint Symfony config
+        run: php bin/console lint:yaml config --parse-tags
+
+      - name: Lint DI Container
+        run: php bin/console lint:container
+
+      - name: Validate Doctrine schema
+        run: php bin/console doctrine:schema:validate --skip-sync
+
+      - name: Prepare PHPStan cache
+        uses: actions/cache@v2
+        with:
+          path: var/cache/phpstan
+          key: ${{ runner.os }}-phpstan-${{ github.ref }}
+          restore-keys: ${{ runner.os }}-phpstan-
+
+      - name: Run ECS
+        run: vendor/bin/ecs check --no-interaction --no-progress-bar -c ecs.php
+
+      - name: Build app cache for PHPStan
+        run: php bin/console cache:clear
+        env:
+          APP_ENV: test
+          APP_DEBUG: 1
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse --no-interaction --no-progress -c phpstan.neon --error-format=github
+
+      - name: Prepare ECS cache
+        uses: actions/cache@v2
+        with:
+          path: var/cache/ecs
+          key: ${{ runner.os }}-ecs-${{ github.ref }}
+          restore-keys: ${{ runner.os }}-ecs-
+
+  backend-tests:
+    name: Backend / Tests
+    runs-on: ubuntu-18.04
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+        options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: false
+          MYSQL_ROOT_PASSWORD: docker
+          MYSQL_DATABASE: boilerplate-v2
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    env:
+      APP_ENV: test
+      DATABASE_URL: mysql://root:docker@127.0.0.1:3306/boilerplate-v2
+      REDIS_DSN: redis://127.0.0.1:6379/1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          coverage: "none"
+          extensions: "json,pdo_mysql,redis"
+          ini-values: "memory_limit=-1"
+          php-version: "8.0"
+        env:
+          fail-fast: true
+          update: true
+
+      - name: Check CI reqs
+        run: composer check-platform-reqs
+
+      - name: Load vendors from cache
+        id: composer-cache
+        uses: actions/cache@v2
+        with:
+          path: vendor
+          key: ${{ runner.os }}-vendor-${{ hashFiles('**/composer.lock') }}
+
+      - name: Install dependencies
+        if: steps.composer-cache.outputs.cache-hit != 'true'
+        run: composer install --prefer-dist --no-progress
+
+      - name: Run PHPUnit
+        run: php bin/phpunit

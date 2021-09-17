@@ -1,13 +1,15 @@
 {
+    "name": "bionoir/boilerplate-v2",
+    "description": "boilerplate project Symfony",
     "type": "project",
     "license": "proprietary",
     "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
-        "php": ">=7.2.5",
+        "php": ">=8.0",
         "ext-ctype": "*",
         "ext-iconv": "*",
-        "composer/package-versions-deprecated": "1.11.99.4",
+        "composer/package-versions-deprecated": "^1.11.99.4",
         "doctrine/annotations": "^1.0",
         "doctrine/doctrine-bundle": "^2.4",
         "doctrine/doctrine-migrations-bundle": "^3.1",
@@ -44,6 +46,13 @@
         "twig/twig": "^2.12|^3.0"
     },
     "require-dev": {
+        "jangregor/phpstan-prophecy": "^0.8.1",
+        "overtrue/phplint": "^3.0",
+        "phpstan/phpstan": "^0.12.99",
+        "phpstan/phpstan-doctrine": "^0.12.44",
+        "phpstan/phpstan-phpunit": "^0.12.22",
+        "phpstan/phpstan-symfony": "^0.12.44",
+        "phpstan/phpstan-webmozart-assert": "^0.12.16",
         "phpunit/phpunit": "^9.5",
         "symfony/browser-kit": "5.3.*",
         "symfony/css-selector": "5.3.*",
@@ -51,7 +60,8 @@
         "symfony/maker-bundle": "^1.0",
         "symfony/phpunit-bridge": "^5.3",
         "symfony/stopwatch": "5.3.*",
-        "symfony/web-profiler-bundle": "5.3.*"
+        "symfony/web-profiler-bundle": "5.3.*",
+        "symplify/easy-coding-standard": "^9.4"
     },
     "config": {
         "optimize-autoloader": true,

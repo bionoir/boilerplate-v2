@@ -1,0 +1,20 @@
+includes:
+    - 'phpstan-config.neon'
+    - 'phpstan-baseline.neon'
+
+parameters:
+    level: max
+    tmpDir: 'var/cache/phpstan/main'
+    checkAlwaysTrueCheckTypeFunctionCall: false # This doesn't play well with Assert::isInstanceOf()
+    checkAlwaysTrueInstanceof: true
+    checkAlwaysTrueStrictComparison: true
+    checkExplicitMixedMissingReturn: true
+    checkMissingClosureNativeReturnTypehintRule: true
+    reportStaticMethodSignatures: true
+    paths:
+        - 'config'
+        - 'src'
+        - 'tests'
+
+    scanFiles:
+        - vendor/symfony/dependency-injection/Loader/Configurator/ContainerConfigurator.php
