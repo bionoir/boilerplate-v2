@@ -88,6 +88,9 @@
     "friendsofphp/proxy-manager-lts": {
         "version": "v1.0.5"
     },
+    "jangregor/phpstan-prophecy": {
+        "version": "0.8.1"
+    },
     "laminas/laminas-code": {
         "version": "4.4.2"
     },
@@ -123,6 +126,21 @@
     },
     "phpspec/prophecy": {
         "version": "1.14.0"
+    },
+    "phpstan/phpstan": {
+        "version": "0.12.99"
+    },
+    "phpstan/phpstan-doctrine": {
+        "version": "0.12.44"
+    },
+    "phpstan/phpstan-phpunit": {
+        "version": "0.12.22"
+    },
+    "phpstan/phpstan-symfony": {
+        "version": "0.12.44"
+    },
+    "phpstan/phpstan-webmozart-assert": {
+        "version": "0.12.16"
     },
     "phpunit/php-code-coverage": {
         "version": "9.2.6"
