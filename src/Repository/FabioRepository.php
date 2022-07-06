@@ -9,10 +9,15 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * 
+ * @template T of Fabio
+ * @template-extends ServiceEntityRepository<Fabio>
+ * 
  * @method Fabio|null find($id, $lockMode = null, $lockVersion = null)
  * @method Fabio|null findOneBy(array $criteria, array $orderBy = null)
  * @method Fabio[]    findAll()
  * @method Fabio[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * 
  */
 class FabioRepository extends ServiceEntityRepository
 {
